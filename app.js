@@ -124,6 +124,7 @@ app.post('/loginSubmit', async (req, res) => {
 
     const schema = Joi.string().email().required();
     const validationResult = schema.validate(email);
+    
     if (validationResult.error != null) {
         res.send("User not found. <a href='/login'>Try again</a>");
         return;
