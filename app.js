@@ -23,6 +23,14 @@ const userCollection = database.db(mongodb_database).collection('users');
 
 const expireTime = 60 * 60 * 1000;
 
+function isAuthenticated(req) {
+    return req.session.authenticated;
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
@@ -46,7 +54,7 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    if (!req.session.authenticated) {
+    if (!isAuthenticated(req)) {
         res.send(`
             <h1>Welcome</h1>
             <a href='/signup'><button>Sign up</button></a>
@@ -139,12 +147,12 @@ app.post('/loginSubmit', async (req, res) => {
 });
 
 app.get('/members', (req, res) => {
-    if (!req.session.authenticated) {
+    if (!isAuthenticated(req)) {
         res.redirect('/');
         return;
     }
 
-    const randomImage = Math.floor(Math.random() * 3) + 1;
+    const randomImage = getRandomInt(1, 3);
     res.send(`
         <h1>Hello, ${req.session.name}.</h1>
         <img src='/cat${randomImage}.gif' style='width:250px;'><br>
