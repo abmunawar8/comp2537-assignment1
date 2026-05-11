@@ -23,10 +23,6 @@ const userCollection = database.db(mongodb_database).collection('users');
 
 const expireTime = 60 * 60 * 1000;
 
-function isAuthenticated(req) {
-    return req.session.authenticated;
-}
-
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -54,7 +50,7 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    if (!isAuthenticated(req)) {
+    if (!req.session.authenticated) {
         res.send(`
             <h1>Welcome</h1>
             <a href='/signup'><button>Sign up</button></a>
@@ -148,7 +144,7 @@ app.post('/loginSubmit', async (req, res) => {
 });
 
 app.get('/members', (req, res) => {
-    if (!isAuthenticated(req)) {
+    if (!req.session.authenticated) {
         res.redirect('/');
         return;
     }
